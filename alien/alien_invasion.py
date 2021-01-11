@@ -110,12 +110,17 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
                 self.scoreboard.prep_score()
+                self.scoreboard.check_high_score()
 
         if not self.aliens:
             # 删除现有的子弹并创建一群外星人
             self.bullets.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            # 提高等级
+            self.stats.level += 1
+            self.scoreboard.prep_level()
 
     def _update_aliens(self):
         """检查是否有外星人位于屏幕边缘，更新外星人群中所有外星人的位置"""
@@ -143,7 +148,9 @@ class AlienInvasion:
 
         # 将ships_left减一
         if self.stats.ships_left > 0:
+            # 将ships_left减一并更新计分牌
             self.stats.ships_left -= 1
+            self.scoreboard.prep_ships()
 
             # 清空余下的外星人和子弹
             self.aliens.empty()
@@ -211,6 +218,8 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.scoreboard.prep_score()
+            self.scoreboard.prep_level()
+            self.scoreboard.prep_ships()
 
             # 清除余下的外星人和子弹
             self.aliens.empty()
